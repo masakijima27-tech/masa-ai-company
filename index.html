@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MASA SAUNA — Marketing Hub</title>
+<style>
+:root {
+  --bg: #0f0f0f; --surface: #1a1a1a; --surface2: #242424;
+  --border: #2e2e2e; --amber: #e8a045; --text: #f0ece4;
+  --muted: #888; --green: #4caf7d; --blue: #4a9edd;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Helvetica Neue', Arial, sans-serif; }
+
+header {
+  border-bottom: 1px solid var(--border); padding: 18px 32px;
+  display: flex; align-items: center; gap: 14px;
+  position: sticky; top: 0; background: rgba(15,15,15,.95);
+  backdrop-filter: blur(12px); z-index: 100;
+}
+.logo { font-size: 20px; font-weight: 700; letter-spacing: 2px; color: var(--amber); }
+.logo span { color: var(--text); font-weight: 300; }
+.badge { background: var(--amber); color: #000; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; letter-spacing: 1px; }
+nav { margin-left: auto; display: flex; gap: 8px; }
+nav button {
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--muted); padding: 7px 16px; border-radius: 8px;
+  cursor: pointer; font-size: 13px; transition: all .2s;
+}
+nav button.active { color: var(--text); border-color: var(--amber); }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 32px; }
+
+.stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 32px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.stat-val { font-size: 26px; font-weight: 700; color: var(--amber); }
+.stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+.sec-title {
+  font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--muted);
+  text-transform: uppercase; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sec-title::after { content:''; flex:1; height:1px; background: var(--border); }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap: 14px; margin-bottom: 40px; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; cursor: pointer;
+  transition: border-color .2s, transform .15s;
+}
+.card:hover { border-color: var(--amber); transform: translateY(-2px); }
+.card-header {
+  padding: 16px 18px; display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.card-icon { font-size: 22px; }
+.card-title { font-size: 14px; font-weight: 600; }
+.card-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.lang-badge {
+  margin-left: auto; font-size: 10px; font-weight: 700;
+  padding: 3px 9px; border-radius: 20px;
+}
+.ja { background:#1a2744; color:#6fa3e0; }
+.en { background:#1a3024; color:#6fcf97; }
+.th { background:#2a1a2e; color:#bb86fc; }
+
+.card-body { padding: 16px 18px; }
+.card-headline { font-size: 14px; font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
+.card-preview { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.card-footer {
+  padding: 11px 18px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.tag { font-size: 10px; padding: 3px 8px; border-radius: 4px; background: var(--surface2); color: var(--muted); }
+.btn-preview {
+  margin-left: auto; background: var(--amber); color: #000;
+  border: none; padding: 7px 18px; border-radius: 7px;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+}
+
+/* Modal */
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.8); z-index: 200;
+  align-items: center; justify-content: center; padding: 20px;
+}
+.overlay.open { display: flex; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; width: 100%; max-width: 720px;
+  max-height: 90vh; overflow-y: auto;
+}
+.modal-head {
+  padding: 20px 24px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+  position: sticky; top: 0; background: var(--surface); z-index: 1;
+}
+.modal-head h2 { font-size: 16px; font-weight: 600; }
+.modal-sub { font-size: 12px; color: var(--muted); }
+.close-btn {
+  margin-left: auto; background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text); width: 34px; height: 34px; border-radius: 8px;
+  cursor: pointer; font-size: 16px;
+}
+.modal-body { padding: 24px; }
+
+.pattern {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 20px; margin-bottom: 14px;
+}
+.p-label {
+  font-size: 11px; font-weight: 700; color: var(--amber);
+  letter-spacing: 1px; margin-bottom: 14px;
+}
+.field-name {
+  font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted); margin: 14px 0 5px;
+}
+.field-name:first-of-type { margin-top: 0; }
+.headline-txt { font-size: 18px; font-weight: 700; line-height: 1.4; color: var(--amber); }
+.body-txt { font-size: 13px; line-height: 1.8; white-space: pre-wrap; }
+.cta-txt { font-size: 13px; color: var(--green); font-weight: 600; white-space: pre-wrap; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.hashtag { font-size: 12px; color: var(--blue); background: #111d2a; padding: 3px 9px; border-radius: 4px; }
+
+/* Campaign tab */
+.campaign-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 32px;
+  font-size: 13px; line-height: 1.9; white-space: pre-wrap; color: var(--text);
+}
+
+/* Timing chips */
+.timing { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.chip { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: #1e1e1e; border: 1px solid var(--border); color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">MASA <span>SAUNA</span></div>
+  <div class="badge">MARKETING HUB</div>
+  <nav>
+    <button class="active" id="tab-btn-ads" onclick="showTab('ads')">広告コンテンツ</button>
+    <button id="tab-btn-campaign" onclick="showTab('campaign')">キャンペーン</button>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="stats">
+    <div class="stat"><div class="stat-val">50,000</div><div class="stat-label">THB / 月 予算</div></div>
+    <div class="stat"><div class="stat-val">150件</div><div class="stat-label">目標予約数 / 月</div></div>
+    <div class="stat"><div class="stat-val">≤333</div><div class="stat-label">目標 CPA (THB)</div></div>
+    <div class="stat"><div class="stat-val">3言語</div><div class="stat-label">日本語 · 英語 · タイ語</div></div>
+  </div>
+
+  <div id="tab-ads">
+    <div class="sec-title">生成済み広告コンテンツ</div>
+    <div class="cards" id="grid"></div>
+  </div>
+
+  <div id="tab-campaign" style="display:none">
+    <div class="sec-title">キャンペーン設計書</div>
+    <div class="campaign-box">キャンペーン設計書 — MASA SAUNA バンコク
+予算: 50,000 THB / 月　｜　期間: 30日間　｜　目標: 新規顧客獲得150件
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+予算配分
+
+META広告計          28,000 THB (56%)
+├─ 日本人駐在員        6,000 THB → 目標30件
+├─ 欧米系駐在員        4,000 THB → 目標18件
+├─ タイ人富裕層       10,000 THB → 目標40件
+└─ 観光客              8,000 THB → 目標32件
+
+GOOGLE広告計         18,000 THB (36%)
+├─ 検索広告（日/英/タイ） 12,000 THB → 目標25件
+└─ ディスプレイ・リターゲ  6,000 THB → 目標5件
+
+制作・運用費          4,000 THB (8%)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4週間スケジュール
+
+Week 1 | 認知フェーズ（12,500 THB）
+  Day 1-2: テクニカル基盤整備・ピクセル設置
+  Day 3-5: 素材入稿・審査対応
+  Day 6-7: テスト配信・トラッキング確認
+
+Week 2 | フルローンチ（17,500 THB）
+  Day 8:   全キャンペーン本予算で稼働
+  Day 8-14: 日次モニタリング（CPC・CTR・予約数）
+  Day 14:  中間レポート・予算調整判断
+
+Week 3 | 最適化フェーズ（15,000 THB）
+  Day 15-16: 高CTRセグメントへ予算シフト
+  Day 17-18: リターゲティング本格化
+  Day 19-20: カート離脱ユーザーへのプッシュ
+
+Week 4 | 定着フェーズ（5,000 THB）
+  Day 22-25: 高CVRセグメントに集中
+  Day 26-28: 来店済み顧客への紹介キャンペーン
+  Day 29-30: 最終レポート・次月設計
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+KPI目標
+
+新規予約数: 150件/月
+CPA目標:   ≤ 333 THB
+ROAS:      ≥ 3.0倍
+CTR(Meta): ≥ 1.5%
+CTR(Google検索): ≥ 5%</div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="overlay" id="overlay" onclick="closeOutside(event)">
+  <div class="modal" id="modal">
+    <div class="modal-head">
+      <span id="m-icon" style="font-size:22px"></span>
+      <div><h2 id="m-title"></h2><div class="modal-sub" id="m-sub"></div></div>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="m-body"></div>
+  </div>
+</div>
+
+<script>
+const ADS = [
+  {
+    icon:"📸", platform:"Instagram", target:"日本人駐在員", lang:"ja",
+    headline:"バンコクで、本物の『ととのい』を。",
+    preview:"忙しい駐在生活の中で、自分だけの時間、持てていますか？",
+    cta_type:"予約促進",
+    timing:["金曜夜 20-22時","週末前"],
+    patterns:[
+      {
+        title:"Pattern A ｜ 非日常の逃げ場",
+        headline:"バンコクで、本物の『ととのい』を。",
+        body:"忙しい駐在生活の中で、\n自分だけの時間、持てていますか？\n\nMASA SAUNAは、バンコクの喧騒から切り離された\n完全プレミアムサウナ空間。\n\n🌿 フィンランド式本格ロウリュ\n🌿 プライベート個室完備\n🌿 日本語スタッフ常駐\n\n「ここに来ると、やっと息ができる気がする」\n― 在住3年目、Kさん\n\n今週末、自分へのご褒美を。",
+        cta:"▶ プロフィールのリンクから今すぐ予約\n初回限定 20%OFF キャンペーン実施中",
+        hashtags:["#バンコク駐在","#バンコクサウナ","#ととのう","#MASASauna","#駐在員の休日","#プレミアムサウナ"]
+      },
+      {
+        title:"Pattern B ｜ 本物志向",
+        headline:"妥協しない人のための、サウナがある。",
+        body:"タイに来ても、クオリティは落としたくない。\nそんなあなたへ——\n\n✅ 室温・湿度を徹底管理した本格ストーブ\n✅ 天然白樺ヴィヒタによる本場のロウリュ\n✅ 水風呂 × 外気浴の黄金サイクルを完全再現\n\n「日本のサウナと比べても、ここは別格」\n多くの駐在員の方に選ばれ続けています。",
+        cta:"▶ ストーリーズのリンクをタップ\n週末・平日ともに予約受付中｜日本語OK",
+        hashtags:["#MASA_SAUNA","#バンコクサウナ","#サウナー","#ととのい","#ロウリュ","#フィンランドサウナ"]
+      },
+      {
+        title:"Pattern C ｜ 疲労回復",
+        headline:"その疲れ、バンコクで溶かしてきませんか？",
+        body:"駐在員の8割が感じている、\n「タイの気候と仕事のダブル疲労」。\n\nMASA SAUNAの90分が、\n1週間分の疲れをリセットします。\n\n🔥 高温サウナで深部体温UP\n💧 冷水浴で自律神経を整える\n😌 外気浴で究極のリラックス状態へ\n\n毎週通う駐在員続出中——\nあなたの「週次メンテナンス」に、ぜひ。",
+        cta:"▶ プロフィールリンクから体験予約\n💬 DMでのご質問も日本語で対応します",
+        hashtags:["#バンコクサウナ","#サウナ効果","#ととのう","#MASASauna","#自律神経","#デトックス"]
+      }
+    ]
+  },
+  {
+    icon:"📘", platform:"Facebook", target:"欧米系駐在員", lang:"en",
+    headline:"Bangkok expats have a new weekend tradition.",
+    preview:"You've tried the rooftop bars. The fancy spas. Now try something different.",
+    cta_type:"予約促進",
+    timing:["Saturday morning","Sunday afternoon"],
+    patterns:[
+      {
+        title:"Pattern A ｜ Community & Ritual",
+        headline:"Bangkok expats have a new weekend tradition.",
+        body:"You've tried the rooftop bars.\nThe fancy spas.\nThe co-working cafés.\n\nNow try something that actually resets you.\n\nMASA SAUNA — Bangkok's first authentic Finnish sauna experience.\n\n🔥 Traditional Löyly steam ceremony\n❄️ Cold plunge + outdoor rest cycle\n🏯 Private rooms for groups or solo sessions\n🇬🇧 English-speaking staff\n\n\"After 2 years in Bangkok, this is the one thing I genuinely look forward to every week.\"\n— James, British expat",
+        cta:"👉 Book your session — Link in bio\nFirst-timer? Use code EXPAT20 for 20% off",
+        hashtags:["#BangkokExpat","#MASASauna","#BangkokWellness","#FinnishSauna","#ExpatLife","#BangkokWeekend"]
+      },
+      {
+        title:"Pattern B ｜ Premium Quality",
+        headline:"You didn't move to Bangkok to settle for less.",
+        body:"The traffic. The heat. The meetings.\nBangkok takes a lot out of you.\n\nMASA SAUNA gives it back.\n\n✅ Authentic Finnish sauna, not a hotel afterthought\n✅ Proper cold plunge + outdoor air bath\n✅ Japanese-designed space — calm, clean, intentional\n✅ English & Japanese staff\n\nThis is how serious wellness should feel.",
+        cta:"🗓️ Weekend slots filling fast — book now\n📍 Central Bangkok | Easy BTS access",
+        hashtags:["#MASASauna","#BangkokLuxury","#WellnessBangkok","#FinnishSauna","#PremiumSauna"]
+      },
+      {
+        title:"Pattern C ｜ Health & Recovery",
+        headline:"Best recovery tool in Bangkok? It's not a massage.",
+        body:"Athletes, executives, and wellness enthusiasts agree:\n\nNothing resets the body like a proper sauna cycle.\n\n🌡️ Core body temperature boost\n🧠 Endorphin & mood reset\n💤 Dramatically better sleep\n🩸 Improved circulation\n\nMASA SAUNA brings the Finnish tradition to central Bangkok.\nAuthentic. Private. Transformative.",
+        cta:"🔗 Book via link in bio\nFirst session 20% off — limited slots",
+        hashtags:["#MASASauna","#SaunaTherapy","#BangkokFitness","#WellnessLife","#Recovery","#HealthyBangkok"]
+      }
+    ]
+  },
+  {
+    icon:"📸", platform:"Instagram", target:"タイ人富裕層", lang:"th",
+    headline:"สัมผัสประสบการณ์ที่ไม่เหมือนใคร",
+    preview:"ไม่ใช่แค่ซาวน่า... แต่คือ Ritual ของคนที่รู้จักคุณค่าของตัวเอง",
+    cta_type:"予約促進",
+    timing:["平日夜 20-22時","週末昼 12-14時"],
+    patterns:[
+      {
+        title:"Pattern 1 ｜ ステータス訴求",
+        headline:"สัมผัสประสบการณ์ที่ไม่เหมือนใคร\nในโลกของ MASA SAUNA",
+        body:"ไม่ใช่แค่ซาวน่า...\nแต่คือ Ritual ของคนที่รู้จักคุณค่าของตัวเอง ✨\n\n🏯 บรรยากาศสไตล์ญี่ปุ่นพรีเมียม\n🌿 อุณหภูมิที่ผ่านการคัดสรรมาอย่างพิถีพิถัน\n🥂 เพราะการดูแลตัวเองคือ Luxury ที่คุณสมควรได้รับทุกวัน\n\nใจกลาง Thonglor — เดินทางง่าย เหมาะกับทุก Lifestyle",
+        cta:"📲 จองเลย — Slot พิเศษสำหรับสัปดาห์นี้มีจำนวนจำกัด\n👉 จองออนไลน์ / ดูแพ็กเกจ",
+        hashtags:["#MASASauna","#LuxuryWellness","#SaunaBangkok","#Thonglor","#พรีเมียมซาวน่า","#BangkokLuxury"]
+      },
+      {
+        title:"Pattern 2 ｜ ウェルネス訴求",
+        headline:"Reset ร่างกาย รีเซ็ตจิตใจ\nใน 60 นาที กับ MASA SAUNA",
+        body:"เราทุกคนรู้ว่า...\nชีวิตในเมืองมัน 'หนัก' แค่ไหน 😮‍💨\n\n✅ ลดความเครียดสะสม\n✅ ผิวกระจ่างใส จากการ Detox ระดับเซลล์\n✅ นอนหลับดีขึ้น หลังเข้าใช้บริการ\n✅ ระบบ Circulation ดีขึ้นอย่างเห็นได้ชัด\n\nเพราะ Wellness ที่ดีต้องเริ่มจากข้างใน 🌸",
+        cta:"🌿 ทดลองใช้ครั้งแรก — Special Intro Price\n👉 ดูโปรโมชั่น / Line: @MASASauna",
+        hashtags:["#MASASauna","#WellnessBangkok","#Detox","#InnerBeauty","#สุขภาพดี","#ซาวน่าบางกอก"]
+      },
+      {
+        title:"Pattern 3 ｜ SNS映え訴求",
+        headline:"Aesthetic ที่สุด\nซาวน่าที่คุณอยากมาซ้ำ ❤️‍🔥",
+        body:"ถ้า Feed ของคุณสะท้อน Lifestyle ของคุณ...\n\nMASA SAUNA คือ Chapter ที่คุณต้องมี 📖✨\n\n🏮 Interior สไตล์ Japanese Minimalist\n🔥 Sauna Experience ที่ไม่มีที่ไหนในกรุงเทพฯ\n🧖‍♀️ Private Room สำหรับกลุ่มเพื่อน\n\nใครเป็น Sauna Girl บ้าง? 🙋‍♀️\nTag เพื่อนที่ต้องพามาเลย!",
+        cta:"📍 Thonglor, Bangkok\n📲 จองผ่าน DM หรือ Link in Bio\n🎁 มาเป็นกลุ่ม 3 คนขึ้นไป รับส่วนลดพิเศษ!",
+        hashtags:["#MASASauna","#SaunaGirl","#BangkokAesthetic","#ThonlorVibes","#ซาวน่า","#LuxuryLife","#สายสุขภาพ"]
+      }
+    ]
+  }
+];
+
+function showTab(t) {
+  document.getElementById('tab-ads').style.display = t==='ads'?'':'none';
+  document.getElementById('tab-campaign').style.display = t==='campaign'?'':'none';
+  document.getElementById('tab-btn-ads').className = t==='ads'?'active':'';
+  document.getElementById('tab-btn-campaign').className = t==='campaign'?'active':'';
+}
+
+function buildCards() {
+  const grid = document.getElementById('grid');
+  ADS.forEach((item, idx) => {
+    const d = document.createElement('div');
+    d.className = 'card';
+    d.onclick = () => openModal(idx);
+    d.innerHTML = `
+      <div class="card-header">
+        <div class="card-icon">${item.icon}</div>
+        <div><div class="card-title">${item.platform}</div><div class="card-sub">${item.target}</div></div>
+        <div class="lang-badge ${item.lang}">${{ja:'日本語',en:'English',th:'ภาษาไทย'}[item.lang]}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-headline">${item.headline}</div>
+        <div class="card-preview">${item.preview}</div>
+        ${item.timing ? `<div class="timing">${item.timing.map(t=>`<span class="chip">⏰ ${t}</span>`).join('')}</div>` : ''}
+      </div>
+      <div class="card-footer">
+        <span class="tag">${item.patterns.length}パターン</span>
+        <span class="tag">${item.cta_type}</span>
+        <button class="btn-preview">プレビュー</button>
+      </div>`;
+    grid.appendChild(d);
+  });
+}
+
+function openModal(idx) {
+  const item = ADS[idx];
+  document.getElementById('m-icon').textContent = item.icon;
+  document.getElementById('m-title').textContent = `${item.platform} — ${item.target}`;
+  document.getElementById('m-sub').textContent = `${{ja:'日本語',en:'English',th:'ภาษาไทย'}[item.lang]} | ${item.patterns.length}パターン`;
+
+  document.getElementById('m-body').innerHTML = item.patterns.map(p => `
+    <div class="pattern">
+      <div class="p-label">${p.title}</div>
+      <div class="field-name">ヘッドライン</div>
+      <div class="headline-txt">${p.headline.replace(/\n/g,'<br>')}</div>
+      <div class="field-name">本文</div>
+      <div class="body-txt">${p.body}</div>
+      <div class="field-name">CTA</div>
+      <div class="cta-txt">${p.cta}</div>
+      ${p.hashtags.length ? `<div class="field-name">ハッシュタグ</div><div class="tags">${p.hashtags.map(h=>`<span class="hashtag">${h}</span>`).join('')}</div>` : ''}
+    </div>`).join('');
+
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal() { document.getElementById('overlay').classList.remove('open'); }
+function closeOutside(e) { if(e.target===document.getElementById('overlay')) closeModal(); }
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+buildCards();
+</script>
+</body>
+</html>
