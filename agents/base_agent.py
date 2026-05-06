@@ -2,12 +2,19 @@ import anthropic
 from config.settings import ANTHROPIC_API_KEY, MODEL
 
 
+def _build_client() -> anthropic.Anthropic:
+    key = ANTHROPIC_API_KEY
+    if key.startswith("sk-ant-si"):
+        return anthropic.Anthropic(auth_token=key)
+    return anthropic.Anthropic(api_key=key)
+
+
 class BaseAgent:
     def __init__(self, name: str, role: str, system_prompt: str):
         self.name = name
         self.role = role
         self.system_prompt = system_prompt
-        self.client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+        self.client = _build_client()
         self.conversation_history: list[dict] = []
 
     def run(self, user_message: str, tools: list | None = None) -> str:
