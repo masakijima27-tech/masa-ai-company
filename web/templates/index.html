@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MASA SAUNA — Marketing Hub</title>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --surface2: #242424;
+      --border: #2e2e2e;
+      --amber: #e8a045;
+      --amber-dim: #c4813a;
+      --text: #f0ece4;
+      --muted: #888;
+      --green: #4caf7d;
+      --blue: #4a9edd;
+      --purple: #9b7fe8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Helvetica Neue', Arial, sans-serif; min-height: 100vh; }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: sticky; top: 0;
+      background: rgba(15,15,15,0.92);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+    .logo { font-size: 20px; font-weight: 700; letter-spacing: 2px; color: var(--amber); }
+    .logo span { color: var(--text); font-weight: 300; }
+    .badge { background: var(--amber); color: #000; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; letter-spacing: 1px; }
+    header nav { margin-left: auto; display: flex; gap: 8px; }
+    header nav button {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--muted); padding: 6px 14px; border-radius: 6px;
+      cursor: pointer; font-size: 13px; transition: all .2s;
+    }
+    header nav button:hover, header nav button.active { color: var(--text); border-color: var(--amber); }
+
+    /* Layout */
+    .container { max-width: 1200px; margin: 0 auto; padding: 32px; }
+
+    /* Hero stats */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+    .stat {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px;
+    }
+    .stat-val { font-size: 28px; font-weight: 700; color: var(--amber); }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; letter-spacing: .5px; }
+
+    /* Section */
+    .section-title {
+      font-size: 13px; font-weight: 600; letter-spacing: 2px;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* Cards grid */
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; margin-bottom: 40px; }
+
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      transition: border-color .2s, transform .15s;
+      cursor: pointer;
+    }
+    .card:hover { border-color: var(--amber); transform: translateY(-2px); }
+    .card-header {
+      padding: 16px 20px;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-icon { font-size: 20px; }
+    .card-title { font-size: 14px; font-weight: 600; }
+    .card-subtitle { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .card-lang { margin-left: auto; font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: 600; }
+    .lang-ja { background: #1a2744; color: #6fa3e0; }
+    .lang-en { background: #1a3024; color: #6fcf97; }
+    .lang-th { background: #2a1a2e; color: #bb86fc; }
+    .lang-all { background: #2a2010; color: var(--amber); }
+
+    .card-body { padding: 16px 20px; }
+    .card-headline {
+      font-size: 15px; font-weight: 600; line-height: 1.4;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .card-preview { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .card-footer {
+      padding: 12px 20px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .tag { font-size: 10px; padding: 3px 8px; border-radius: 4px; background: var(--surface2); color: var(--muted); }
+    .btn-preview {
+      margin-left: auto;
+      background: var(--amber); color: #000;
+      border: none; padding: 6px 16px; border-radius: 6px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-preview:hover { background: var(--amber-dim); }
+
+    /* Generate button */
+    .generate-bar {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px;
+      display: flex; gap: 12px; align-items: center;
+      margin-bottom: 32px;
+    }
+    .generate-bar select, .generate-bar input {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); padding: 10px 14px; border-radius: 8px;
+      font-size: 13px; flex: 1;
+    }
+    .btn-generate {
+      background: var(--amber); color: #000; border: none;
+      padding: 10px 24px; border-radius: 8px; font-size: 13px;
+      font-weight: 700; cursor: pointer; white-space: nowrap;
+      transition: background .2s;
+    }
+    .btn-generate:hover { background: var(--amber-dim); }
+    .btn-generate:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.75); z-index: 1000;
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; width: 100%; max-width: 760px;
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px; position: sticky; top: 0;
+      background: var(--surface);
+    }
+    .modal-header h2 { font-size: 16px; font-weight: 600; }
+    .modal-close {
+      margin-left: auto; background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); width: 32px; height: 32px; border-radius: 8px;
+      cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;
+    }
+    .modal-body { padding: 24px; }
+    .modal-body .pattern {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 20px; margin-bottom: 16px;
+    }
+    .modal-body .pattern-title {
+      font-size: 13px; font-weight: 700; color: var(--amber);
+      margin-bottom: 12px; letter-spacing: 1px;
+    }
+    .modal-body .field-label {
+      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 6px; margin-top: 14px;
+    }
+    .modal-body .field-value {
+      font-size: 14px; line-height: 1.7; color: var(--text);
+      white-space: pre-wrap;
+    }
+    .hashtags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .hashtag { font-size: 12px; color: var(--blue); background: #111d2a; padding: 3px 8px; border-radius: 4px; }
+    .spinner {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid var(--border); border-top-color: var(--amber);
+      border-radius: 50%; animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-msg { color: var(--muted); font-size: 13px; display: flex; align-items: center; gap: 8px; }
+    .channel-badge {
+      display: inline-block; font-size: 11px; padding: 4px 10px;
+      border-radius: 20px; font-weight: 600; margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">MASA <span>SAUNA</span></div>
+  <div class="badge">MARKETING HUB</div>
+  <nav>
+    <button class="active" onclick="showTab('ads')">広告コンテンツ</button>
+    <button onclick="showTab('campaign')">キャンペーン</button>
+  </nav>
+</header>
+
+<div class="container">
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-val">50,000</div>
+      <div class="stat-label">THB / 月 予算</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">150件</div>
+      <div class="stat-label">目標予約数 / 月</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">≤333</div>
+      <div class="stat-label">目標 CPA (THB)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">3言語</div>
+      <div class="stat-label">日本語・英語・タイ語</div>
+    </div>
+  </div>
+
+  <!-- Generate bar -->
+  <div class="generate-bar" id="generateBar">
+    <select id="genPlatform">
+      <option value="Instagram">Instagram</option>
+      <option value="Facebook">Facebook</option>
+      <option value="Google広告">Google広告</option>
+      <option value="LINE">LINE</option>
+      <option value="TikTok">TikTok</option>
+    </select>
+    <select id="genTarget">
+      <option value="日本人駐在員">日本人駐在員</option>
+      <option value="欧米系駐在員">欧米系駐在員</option>
+      <option value="タイ人富裕層">タイ人富裕層</option>
+      <option value="観光客">観光客</option>
+    </select>
+    <select id="genLang">
+      <option value="ja">日本語</option>
+      <option value="en">英語</option>
+      <option value="th">タイ語</option>
+    </select>
+    <button class="btn-generate" onclick="generateContent()">+ 広告文を生成</button>
+  </div>
+
+  <!-- Ads tab -->
+  <div id="tab-ads">
+    <div class="section-title">生成済み広告コンテンツ</div>
+    <div class="cards" id="adsGrid">
+      {% for item in ads %}
+      <div class="card" onclick="openModal('{{ loop.index0 }}')">
+        <div class="card-header">
+          <div class="card-icon">{{ item.icon }}</div>
+          <div>
+            <div class="card-title">{{ item.platform }}</div>
+            <div class="card-subtitle">{{ item.target }}</div>
+          </div>
+          <div class="card-lang lang-{{ item.lang }}">{{ item.lang_label }}</div>
+        </div>
+        <div class="card-body">
+          <div class="card-headline">{{ item.headline }}</div>
+          <div class="card-preview">{{ item.preview }}</div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">{{ item.pattern_count }}パターン</span>
+          <span class="tag">{{ item.cta_type }}</span>
+          <button class="btn-preview">プレビュー</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Campaign tab -->
+  <div id="tab-campaign" style="display:none">
+    <div class="section-title">キャンペーン設計</div>
+    <div id="campaignContent" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:32px;line-height:1.8;font-size:14px;white-space:pre-wrap;color:var(--text);">
+      {{ campaign_text }}
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div style="font-size:20px" id="modalIcon"></div>
+      <div>
+        <h2 id="modalTitle"></h2>
+        <div style="font-size:12px;color:var(--muted)" id="modalSubtitle"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+const adsData = {{ ads_json | safe }};
+
+function showTab(tab) {
+  document.getElementById('tab-ads').style.display = tab === 'ads' ? '' : 'none';
+  document.getElementById('tab-campaign').style.display = tab === 'campaign' ? '' : 'none';
+  document.querySelectorAll('header nav button').forEach((b, i) => {
+    b.classList.toggle('active', (tab === 'ads' && i === 0) || (tab === 'campaign' && i === 1));
+  });
+}
+
+function openModal(idx) {
+  const item = adsData[idx];
+  document.getElementById('modalIcon').textContent = item.icon;
+  document.getElementById('modalTitle').textContent = `${item.platform} — ${item.target}`;
+  document.getElementById('modalSubtitle').textContent = item.lang_label + ' | ' + item.pattern_count + 'パターン';
+
+  let html = '';
+  item.patterns.forEach((p, i) => {
+    const tags = (p.hashtags || []).map(t => `<span class="hashtag">${t}</span>`).join('');
+    html += `
+      <div class="pattern">
+        <div class="pattern-title">▸ Pattern ${i + 1}｜${p.title}</div>
+        <div class="field-label">ヘッドライン</div>
+        <div class="field-value" style="font-size:16px;font-weight:600;color:var(--amber)">${p.headline}</div>
+        <div class="field-label">本文</div>
+        <div class="field-value">${p.body}</div>
+        <div class="field-label">CTA</div>
+        <div class="field-value" style="color:var(--green)">${p.cta}</div>
+        ${tags ? `<div class="field-label">ハッシュタグ</div><div class="hashtags">${tags}</div>` : ''}
+      </div>`;
+  });
+
+  document.getElementById('modalBody').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+async function generateContent() {
+  const btn = document.querySelector('.btn-generate');
+  const platform = document.getElementById('genPlatform').value;
+  const target = document.getElementById('genTarget').value;
+  const lang = document.getElementById('genLang').value;
+  const langLabel = { ja: '日本語', en: '英語', th: 'タイ語' }[lang];
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>';
+
+  try {
+    const res = await fetch('/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ platform, target, lang })
+    });
+    const data = await res.json();
+    if (data.error) { alert(data.error); return; }
+
+    // Add card to grid
+    const idx = adsData.length;
+    adsData.push(data.item);
+    const grid = document.getElementById('adsGrid');
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.onclick = () => openModal(idx);
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-icon">${data.item.icon}</div>
+        <div>
+          <div class="card-title">${data.item.platform}</div>
+          <div class="card-subtitle">${data.item.target}</div>
+        </div>
+        <div class="card-lang lang-${data.item.lang}">${data.item.lang_label}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-headline">${data.item.headline}</div>
+        <div class="card-preview">${data.item.preview}</div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">${data.item.pattern_count}パターン</span>
+        <span class="tag">${data.item.cta_type}</span>
+        <button class="btn-preview">プレビュー</button>
+      </div>`;
+    grid.prepend(card);
+    openModal(idx);
+  } catch(e) {
+    alert('生成に失敗しました: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '+ 広告文を生成';
+  }
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
