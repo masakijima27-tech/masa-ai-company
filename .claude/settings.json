@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "video-editing-pack": {
+      "source": {
+        "source": "directory",
+        "path": "./plugins/video-editing-pack"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "video-editing-pack@video-editing-pack": true
+  }
+}
