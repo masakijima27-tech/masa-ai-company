@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "note": "Whisper誤変換の補正辞書。このファイルを vocabulary.json にコピーして自分の語彙を追加してください。pattern には正規表現が使えます。"
+  },
+  "corrections": [
+    {
+      "pattern": "クロード",
+      "replacement": "Claude",
+      "note": "AIツール名はアルファベット表記に統一"
+    },
+    {
+      "pattern": "チャット(GPT|ジーピーティー)",
+      "replacement": "ChatGPT",
+      "note": "サービス名の表記ゆれ"
+    },
+    {
+      "pattern": "いんすた(グラム)?",
+      "replacement": "Instagram",
+      "note": "ひらがな化されがちな固有名詞の例"
+    }
+  ]
+}

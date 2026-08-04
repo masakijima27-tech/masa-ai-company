@@ -1,0 +1,8 @@
+{
+  "name": "video-editing-pack-masa",
+  "version": "0.1.0",
+  "description": "動画のジャンプカット＋テロップ焼き込みを全自動で行うスキルパック。word単位文字起こし、無音・フィラー自動カット、-14LUFS整音、縦リール/横講座の焼き込み、品質改札、MP4/SRT/FCPXML出力。顔出しNG向けの顔追従スタンプ工程つき",
+  "author": {
+    "name": "haru"
+  }
+}
