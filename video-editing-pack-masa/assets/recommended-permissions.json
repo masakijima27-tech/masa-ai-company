@@ -1,0 +1,16 @@
+{
+  "_note": "動画編集パックが使うコマンドの許可リスト。setup_permissions.py が ~/.claude/settings.json にこの中身をマージします。手で編集する必要はありません。",
+  "permissions": {
+    "allow": [
+      "Bash(ls *)",
+      "Bash(cd *)",
+      "Bash(python3 *)",
+      "Bash(python *)",
+      "Bash(py *)",
+      "Bash(pip3 install *)",
+      "Bash(pip install *)",
+      "Bash(brew install *)",
+      "Bash(winget install *)"
+    ]
+  }
+}

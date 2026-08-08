@@ -1,0 +1,13 @@
+{
+  "name": "video-editing-pack",
+  "owner": {
+    "name": "haru"
+  },
+  "plugins": [
+    {
+      "name": "video-editing-pack",
+      "source": "./",
+      "description": "動画のジャンプカット＋テロップ焼き込みを全自動で行うスキルパック"
+    }
+  ]
+}
