@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "note": "Masaさん案件用の語彙辞書。whisperの誤変換をここで自動補正する。実戦で見つけた誤変換を随時追加していく。"
+  },
+  "corrections": [
+    {
+      "pattern": "晩国|盤国|番国",
+      "replacement": "バンコク",
+      "note": "バンコクの誤変換（2026-07-21 実音声テストで確認）"
+    },
+    {
+      "pattern": "キッタネイジ|きったない字",
+      "replacement": "汚い字",
+      "note": "2026-07-21 実音声テストで確認"
+    },
+    {
+      "pattern": "パーム ?クラブ|ぱーむくらぶ",
+      "replacement": "PALM CLUB",
+      "note": "Masaさんのコミュニティ名"
+    },
+    {
+      "pattern": "チャット(GPT|ジーピーティー)",
+      "replacement": "ChatGPT",
+      "note": "サービス名の表記ゆれ"
+    },
+    {
+      "pattern": "シーツ",
+      "replacement": "施設",
+      "note": "Masaさんの事業リスト文脈での誤変換(2026-07-21本人確認)。寝具の話が出たら外すこと"
+    }
+  ]
+}
