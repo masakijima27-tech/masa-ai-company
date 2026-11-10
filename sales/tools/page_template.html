@@ -1,0 +1,193 @@
+<title>MASA AI 営業案件ボード</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: 1カラムの業務ボード。上に「価格・報酬のルール」、下に絞り込みできる案件カード */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --line:#d9dee5; --fg:#18202b; --muted:#5b6676;
+  --accent:#0f6b6b; --accent-soft:#dcefee; --warn:#b5531c; --warn-soft:#f8e6da; --good:#2a7a3e; --good-soft:#dff0e3;
+  --display:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;
+  --body:"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11161c; --surface:#19212a; --line:#2c3743; --fg:#e7ecf1; --muted:#9aa7b6;
+  --accent:#5cc3c0; --accent-soft:#16393a; --warn:#f0a070; --warn-soft:#3d2618; --good:#7fd08f; --good-soft:#1b3322; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11161c; --surface:#19212a; --line:#2c3743; --fg:#e7ecf1; --muted:#9aa7b6;
+  --accent:#5cc3c0; --accent-soft:#16393a; --warn:#f0a070; --warn-soft:#3d2618; --good:#7fd08f; --good-soft:#1b3322; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.7;font-size:15px}
+.wrap{max-width:1080px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:40px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.3;margin:0}
+h1{font-size:clamp(26px,4vw,36px);font-weight:900}
+h2{font-size:22px;font-weight:700}
+h3{font-size:16px;font-weight:700}
+p{margin:0}
+.lead{color:var(--muted);max-width:65ch}
+.eyebrow{font-size:12px;letter-spacing:.08em;color:var(--accent);font-weight:700}
+section{display:grid;gap:16px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* 価格ゾーン */
+.zone{display:grid;grid-template-columns:3fr 1fr 3fr 2fr 1fr;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.zone div{padding:12px 10px;font-size:13px;display:grid;gap:2px;min-width:0}
+.zone b{font-family:var(--mono);font-size:13px}
+.z-bad{background:var(--warn-soft);color:var(--warn)}
+.z-thin{background:var(--surface);color:var(--muted)}
+.z-win{background:var(--accent);color:var(--surface)}
+.z-ok{background:var(--accent-soft);color:var(--accent)}
+@media (max-width:640px){.zone{grid-template-columns:1fr}}
+
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.rule{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:grid;gap:4px;align-content:start}
+.rule .big{font-family:var(--mono);font-size:28px;color:var(--accent)}
+.rule small{color:var(--muted)}
+
+.tbl{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.06em;color:var(--muted);font-weight:700;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+
+/* 案件 */
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.chip:focus-visible,.copy:focus-visible,#q:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#q{flex:1 1 220px;min-width:0;padding:8px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);font:inherit}
+.count{color:var(--muted);font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+@media (max-width:400px){.cards{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:grid;gap:10px;grid-template-rows:auto auto 1fr auto auto;min-width:0}
+.card .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.tag{font-size:11px;letter-spacing:.06em;color:var(--muted)}
+.ratio{font-size:11px;padding:2px 8px;border-radius:999px;font-family:var(--mono);white-space:nowrap}
+.ratio.win{background:var(--good-soft);color:var(--good)}
+.ratio.hi{background:var(--accent-soft);color:var(--accent)}
+.ratio.lo{background:var(--warn-soft);color:var(--warn)}
+.scope{font-size:13px;color:var(--muted)}
+.price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.price .yen{font-family:var(--mono);font-size:22px}
+.price .unit{font-size:12px;color:var(--muted)}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:12px}
+dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.reward{background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:8px 10px;font-size:13px;display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.copy{border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:6px;padding:4px 10px;font:inherit;font-size:12px;cursor:pointer}
+.foot{color:var(--muted);font-size:13px;display:grid;gap:4px}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .15s}.card:hover{border-color:var(--accent)}}
+</style>
+
+<div class="wrap">
+  <header style="display:grid;gap:10px">
+    <span class="eyebrow">営業チーム共有用</span>
+    <h1>MASA AI 営業案件ボード</h1>
+    <p class="lead">当社のAI開発チームが受けられる案件を、世の中の相場・当社価格・作業範囲・営業報酬つきでまとめました。お客様に提示するのは「当社価格」です。金額は税別の目安です。</p>
+  </header>
+
+  <section>
+    <span class="eyebrow">価格の考え方</span>
+    <h2>一般相場の40〜70%が、一番仕事が取れる価格帯</h2>
+    <div class="zone" role="img" aria-label="相場比ごとの取りやすさ">
+      <div class="z-bad"><b>〜30%</b>安すぎて疑われる</div>
+      <div class="z-thin"><b>30〜40%</b>実績づくりのみ</div>
+      <div class="z-win"><b>40〜70%</b>標準価格。一番取れる</div>
+      <div class="z-ok"><b>70〜90%</b>品質・速さで勝負</div>
+      <div class="z-thin"><b>90%〜</b>強みが出ない</div>
+    </div>
+    <p class="lead">値引きは最大10%まで。それ以上下げたいときは、修正回数やページ数など作業範囲を減らします。単発の案件には保守・運用の月額をセットで提案します。</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">営業報酬</span>
+    <h2>1件あたりの報酬ルール</h2>
+    <div class="rules">
+      <div class="rule"><small>紹介だけ（お客様をつなぐ）</small><span class="big">10%</span><small>月額案件は 8% × 12ヶ月</small></div>
+      <div class="rule"><small>成約まで（商談・見積・クロージング）</small><span class="big">20%</span><small>月額案件は 15% × 12ヶ月</small></div>
+      <div class="rule"><small>ボーナス</small><h3>初成約 +1万円</h3><small>月3件以上で +5%／単発＋月額セットで +5,000円。最低保証は1件3,000円</small></div>
+    </div>
+    <p class="lead">当社の粗利は売上の60〜70%が目安です。20%を営業に渡しても粗利の約3割で、成果報酬型の営業代行の相場（20〜30%）とも釣り合います。報酬はお客様の入金確認後、月末締め翌月末払いです。</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">営業パターン</span>
+    <h2>誰に、何を、どう売ってもらうか</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>営業する人</th><th>報酬の形</th><th>売る商品</th><th>主なやり方</th></tr></thead>
+      <tbody>
+        <tr><td><b>素人・副業（SNS）</b></td><td>紹介10%</td><td>10万円以下（動画・バナー・ロゴ・LP・MEO）</td><td>X・Instagram・TikTokで発信、知人の店舗や経営者に声かけ。投稿には「PR」表記が必須</td></tr>
+        <tr><td><b>フリーランス営業</b></td><td>成約20%</td><td>10〜100万円</td><td>人脈・SNSから商談、ヒアリング、見積提示。最初の3件は当社が同席</td></tr>
+        <tr><td><b>営業代行会社</b></td><td>アポ1件1.5〜3万円 or 成約25%</td><td>50万円以上（自動化・チャットボット・システム・SaaS）</td><td>テレアポ・フォーム営業・メール。1ヶ月・アポ10件で小さくテスト</td></tr>
+        <tr><td><b>マーケ会社・広告代理店</b></td><td>取次25% or OEM卸60〜70%</td><td>全部</td><td>既存のお客様にセット提案（広告運用＋LP＋動画など）</td></tr>
+        <tr><td><b>士業・コンサル・FC本部</b></td><td>紹介10〜15%</td><td>HP・業務自動化・AI-OCR・AI研修</td><td>顧問先向けの「AI活用セミナー」を共催して個別相談へ</td></tr>
+        <tr><td><b>既存のお客様</b></td><td>紹介10% or 次回割引</td><td>何でも</td><td>納品1ヶ月後に紹介をお願いする</td></tr>
+        <tr><td><b>自社（SNS・スキルマーケット）</b></td><td>なし</td><td>小〜中型</td><td>制作物のビフォーアフターを発信、小案件で実績と評価を集める</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <span class="eyebrow">案件リスト</span>
+    <h2>当社でできる案件と価格</h2>
+    <div class="controls" id="cats" aria-label="カテゴリで絞り込み"></div>
+    <div class="controls">
+      <label for="q" class="tag">キーワード</label>
+      <input id="q" type="search" placeholder="例：LINE、動画、自動化">
+      <span class="count" id="count"></span>
+    </div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <footer class="foot">
+    <p>相場比＝当社価格 ÷ 一般相場の中央値。緑は40〜70%の勝てるゾーンです。</p>
+    <p>「〜」がつく案件は最低価格です。要件が増えれば価格も報酬も上がります。範囲外の作業は別見積で、営業が独断で「全部込み」と約束しないでください。</p>
+  </footer>
+</div>
+
+<script>
+const CASES = /*__CASES__*/[];
+const yen = n => n.toLocaleString("ja-JP") + "円";
+const cats = ["すべて", ...new Set(CASES.map(c => c.cat))];
+let cat = "すべて";
+try { const s = localStorage.getItem("cat"); if (s && cats.includes(s)) cat = s; } catch (e) {}
+const catsEl = document.getElementById("cats"), cardsEl = document.getElementById("cards"),
+      qEl = document.getElementById("q"), countEl = document.getElementById("count");
+
+function esc(s){return String(s).replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]))}
+function ratioClass(r){return r < 40 ? "lo" : r <= 70 ? "win" : "hi"}
+function pitch(c){
+  return `【${c.name}】\n当社価格：${yen(c.ours)}／${c.unit}（税別）\n納期目安：${c.days}\n作業範囲：${c.scope}\n一般的な相場：${c.market}`;
+}
+function renderCats(){
+  catsEl.innerHTML = cats.map(c => `<button class="chip" type="button" aria-pressed="${c===cat}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
+}
+function render(){
+  const q = qEl.value.trim().toLowerCase();
+  const list = CASES.filter(c => (cat==="すべて"||c.cat===cat) && (!q || (c.name+c.scope+c.cat).toLowerCase().includes(q)));
+  countEl.textContent = `${list.length}件`;
+  cardsEl.innerHTML = list.map((c,i) => `
+    <article class="card">
+      <div class="top"><span class="tag">${esc(c.cat)}</span><span class="ratio ${ratioClass(c.ratio)}">相場比 ${c.ratio}%</span></div>
+      <h3>${esc(c.name)}</h3>
+      <p class="scope">${esc(c.scope)}</p>
+      <div style="display:grid;gap:6px">
+        <div class="price"><span class="yen">${yen(c.ours)}</span><span class="unit">／${esc(c.unit)}・納期 ${esc(c.days)}</span></div>
+        <dl><dt>一般相場</dt><dd>${esc(c.market)}</dd><dt>AI会社相場</dt><dd>${esc(c.ai)}</dd></dl>
+      </div>
+      <div class="reward"><span>${esc(c.reward)}</span><button class="copy" type="button" data-i="${CASES.indexOf(c)}">提案文をコピー</button></div>
+    </article>`).join("") || `<p class="lead">該当する案件がありません。キーワードを変えてください。</p>`;
+}
+catsEl.addEventListener("click", e => {
+  const b = e.target.closest("[data-cat]"); if (!b) return;
+  cat = b.dataset.cat; try { localStorage.setItem("cat", cat); } catch (e) {}
+  renderCats(); render();
+});
+qEl.addEventListener("input", render);
+cardsEl.addEventListener("click", e => {
+  const b = e.target.closest(".copy"); if (!b) return;
+  const text = pitch(CASES[+b.dataset.i]);
+  const done = () => { b.textContent = "コピーしました"; setTimeout(() => b.textContent = "提案文をコピー", 1600); };
+  navigator.clipboard?.writeText(text).then(done).catch(() => { b.textContent = "コピーできませんでした"; });
+});
+renderCats(); render();
+</script>
