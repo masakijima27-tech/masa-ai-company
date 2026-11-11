@@ -73,7 +73,18 @@ tr:last-child td{border-bottom:0}
 dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:12px}
 dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:tabular-nums}
 .reward{background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:8px 10px;font-size:13px;display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.reward dt{color:var(--accent);opacity:.8}
 .copy{border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:6px;padding:4px 10px;font:inherit;font-size:12px;cursor:pointer}
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:8px;counter-reset:step}
+.flow li{counter-increment:step;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:6px;align-content:start;min-width:0}
+.flow li::before{content:counter(step);font-family:var(--mono);font-size:12px;color:var(--surface);background:var(--accent);width:22px;height:22px;border-radius:50%;display:grid;place-items:center}
+.flow .who{font-size:11px;letter-spacing:.06em;color:var(--accent);font-weight:700}
+.flow p{font-size:13px;color:var(--muted)}
+@media (max-width:860px){.flow{grid-template-columns:1fr 1fr}}
+@media (max-width:480px){.flow{grid-template-columns:1fr}}
+.script{background:var(--accent-soft);border-radius:8px;padding:16px;display:grid;gap:8px}
+.script-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.script p{font-size:14px;max-width:72ch}
 .foot{color:var(--muted);font-size:13px;display:grid;gap:4px}
 @media (prefers-reduced-motion:no-preference){.card{transition:border-color .15s}.card:hover{border-color:var(--accent)}}
 </style>
@@ -82,7 +93,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
   <header style="display:grid;gap:10px">
     <span class="eyebrow">営業チーム共有用</span>
     <h1>MASA AI 営業案件ボード</h1>
-    <p class="lead">当社のAI開発チームが受けられる案件を、世の中の相場・当社価格・作業範囲・営業報酬つきでまとめました。お客様に提示するのは「当社価格」です。金額は税別の目安です。</p>
+    <p class="lead">飲食店・物販のツールからAI社員、オーダーメイド開発まで、当社のAI開発チームが受けられる案件を、世の中の相場・当社価格・作業範囲・営業報酬つきでまとめました。お客様に提示するのは「当社価格」です。金額は税別の目安です。</p>
   </header>
 
   <section>
@@ -102,11 +113,29 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
     <span class="eyebrow">営業報酬</span>
     <h2>1件あたりの報酬ルール</h2>
     <div class="rules">
-      <div class="rule"><small>紹介だけ（お客様をつなぐ）</small><span class="big">10%</span><small>月額案件は 8% × 12ヶ月</small></div>
-      <div class="rule"><small>成約まで（商談・見積・クロージング）</small><span class="big">20%</span><small>月額案件は 15% × 12ヶ月</small></div>
+      <div class="rule"><small>アポ営業（ファーストアプローチ→商談設定）</small><span class="big">8%</span><small>月額案件は 6% × 12ヶ月</small></div>
+      <div class="rule"><small>窓口クローザー（商談→エンジニア確認→成約）</small><span class="big">12%</span><small>月額案件は 9% × 12ヶ月。1人で両方なら合計20%</small></div>
+      <div class="rule"><small>紹介だけ（SNS紹介者など）</small><span class="big">10%</span><small>月額案件は 8% × 12ヶ月</small></div>
       <div class="rule"><small>ボーナス</small><h3>初成約 +1万円</h3><small>月3件以上で +5%／単発＋月額セットで +5,000円。最低保証は1件3,000円</small></div>
     </div>
     <p class="lead">当社の粗利は売上の60〜70%が目安です。20%を営業に渡しても粗利の約3割で、成果報酬型の営業代行の相場（20〜30%）とも釣り合います。報酬はお客様の入金確認後、月末締め翌月末払いです。</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">営業フロー</span>
+    <h2>アポ営業 → 窓口クローザー → エンジニア確認 → 成約</h2>
+    <ol class="flow">
+      <li><span class="who">アポ営業</span><h3>ファーストアプローチ</h3><p>「御社の〇〇を作らせてほしい」と具体的に伝え、例を1つ見せて、商談日を取る。価格と納期は約束しない。</p></li>
+      <li><span class="who">窓口クローザー</span><h3>ヒアリング商談 30分</h3><p>時間がかかっている作業、予算、決める人、時期、今使っているツールを聞く。</p></li>
+      <li><span class="who">開発チーム</span><h3>エンジニア確認</h3><p>できるか・いくらか・何日か を24時間以内に回答。松竹梅の見積を作る。</p></li>
+      <li><span class="who">窓口クローザー</span><h3>提案・クロージング</h3><p>竹プランをおすすめに、保守の月額をセットで提案。値引きは最大10%まで。</p></li>
+      <li><span class="who">クローザー → 開発</span><h3>成約・着手</h3><p>契約書と着手金50%の入金を確認して開発へ。クローザーは納品まで窓口を続ける。</p></li>
+    </ol>
+    <div class="script">
+      <div class="script-head"><h3>ファーストアプローチの基本トーク</h3><button class="copy" type="button" id="copyBase">トークをコピー</button></div>
+      <p id="baseScript">突然失礼します。AIで御社専用のツールやシステムを作っている、MASA AIチームの〇〇です。今日は、御社の〇〇を作らせていただけないかと思ってご連絡しました。例えば「〇〇」のようなものがあったら、〇〇の手間がかなり減ると思うのですが、いかがでしょうか？当社はAIを使うので、普通の開発会社の半分くらいの費用で作れます。ホームページや動画から、社内のシステム、AI社員まで、作りたいものがあれば何でも対応します。一度、30分ほどお話を聞かせていただけませんか？</p>
+    </div>
+    <p class="lead">業種ごとのトーク、断られたときの返し、トスアップシート、エンジニアへの要件メモの書き方は、資料「09_営業フロー」にまとめています。各案件カードの「アプローチ文をコピー」で、その案件を例にした最初の連絡文が作れます。</p>
   </section>
 
   <section>
@@ -156,7 +185,7 @@ const catsEl = document.getElementById("cats"), cardsEl = document.getElementByI
 function esc(s){return String(s).replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]))}
 function ratioClass(r){return r < 40 ? "lo" : r <= 70 ? "win" : "hi"}
 function pitch(c){
-  return `【${c.name}】\n当社価格：${yen(c.ours)}／${c.unit}（税別）\n納期目安：${c.days}\n作業範囲：${c.scope}\n一般的な相場：${c.market}`;
+  return `突然失礼します。AIで御社専用のツールやシステムを作っている、MASA AIチームの〇〇です。\n御社向けに「${c.name}」を作らせていただけないかと思い、ご連絡しました。\n\n例えばこんな内容です：${c.scope}\n一般的には${c.market}ほどかかるものですが、当社はAIを使うので${yen(c.ours)}〜（税別）で作れます。\n\nほかにも、ホームページや動画から社内システム、AI社員まで、作りたいものがあれば何でも対応します。\n一度30分ほど、お話を聞かせていただけませんか？`;
 }
 function renderCats(){
   catsEl.innerHTML = cats.map(c => `<button class="chip" type="button" aria-pressed="${c===cat}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
@@ -174,7 +203,7 @@ function render(){
         <div class="price"><span class="yen">${yen(c.ours)}</span><span class="unit">／${esc(c.unit)}・納期 ${esc(c.days)}</span></div>
         <dl><dt>一般相場</dt><dd>${esc(c.market)}</dd><dt>AI会社相場</dt><dd>${esc(c.ai)}</dd></dl>
       </div>
-      <div class="reward"><span>${esc(c.reward)}</span><button class="copy" type="button" data-i="${CASES.indexOf(c)}">提案文をコピー</button></div>
+      <div class="reward"><dl><dt>アポ営業</dt><dd>${yen(c.apo)}${c.monthly?"／月":""}</dd><dt>クローザー</dt><dd>${yen(c.closer)}${c.monthly?"／月":""}</dd><dt>紹介のみ</dt><dd>${yen(c.intro)}${c.monthly?"／月":""}</dd></dl><button class="copy" type="button" data-i="${CASES.indexOf(c)}">アプローチ文をコピー</button></div>
     </article>`).join("") || `<p class="lead">該当する案件がありません。キーワードを変えてください。</p>`;
 }
 catsEl.addEventListener("click", e => {
@@ -188,6 +217,12 @@ cardsEl.addEventListener("click", e => {
   const text = pitch(CASES[+b.dataset.i]);
   const done = () => { b.textContent = "コピーしました"; setTimeout(() => b.textContent = "提案文をコピー", 1600); };
   navigator.clipboard?.writeText(text).then(done).catch(() => { b.textContent = "コピーできませんでした"; });
+});
+document.getElementById("copyBase").addEventListener("click", e => {
+  const b = e.currentTarget;
+  navigator.clipboard?.writeText(document.getElementById("baseScript").textContent)
+    .then(() => { b.textContent = "コピーしました"; setTimeout(() => b.textContent = "トークをコピー", 1600); })
+    .catch(() => { b.textContent = "コピーできませんでした"; });
 });
 renderCats(); render();
 </script>

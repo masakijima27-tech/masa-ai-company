@@ -19,24 +19,25 @@ def man(lo, hi):
 
 def rewards(price, monthly):
     r = REWARD
+    pre = "monthly_" if monthly else ""
+    calc = lambda k: max(r["min_reward"], int(round(price * r[pre + k], -2)))
+    i, a, c = calc("intro_rate"), calc("apo_rate"), calc("closer_rate")
     if monthly:
-        i = max(r["min_reward"], int(round(price * r["monthly_intro_rate"], -2)))
-        c = max(r["min_reward"], int(round(price * r["monthly_close_rate"], -2)))
         m = r["monthly_months"]
-        return i, c, f"紹介 月{yen(i)}／成約 月{yen(c)}（{m}ヶ月）", c * m
-    i = max(r["min_reward"], int(round(price * r["intro_rate"], -2)))
-    c = max(r["min_reward"], int(round(price * r["close_rate"], -2)))
-    return i, c, f"紹介 {yen(i)}／成約 {yen(c)}", c
+        label = f"アポ 月{yen(a)}＋クローザー 月{yen(c)}（{m}ヶ月）／紹介のみ 月{yen(i)}"
+    else:
+        label = f"アポ {yen(a)}＋クローザー {yen(c)}／紹介のみ {yen(i)}"
+    return i, a, c, label
 
 
 rows = []
 for cat, name, scope, market, ai, ours, unit, days, monthly in CASES:
     mid = (market[0] + market[1]) / 2
     ratio = round(ours / mid * 100)
-    i, c, label, total = rewards(ours, monthly)
+    i, a, c, label = rewards(ours, monthly)
     rows.append(dict(cat=cat, name=name, scope=scope, market=man(*market), ai=man(*ai),
                      ours=ours, unit=unit, days=days, monthly=monthly, ratio=ratio,
-                     intro=i, close=c, reward=label, total=total))
+                     intro=i, apo=a, closer=c, reward=label))
 
 # ---- Markdown ----
 md = ["# 営業案件リスト（全サービス・価格・作業範囲・営業報酬）", "",
@@ -47,7 +48,8 @@ md = ["# 営業案件リスト（全サービス・価格・作業範囲・営�
       "- AI会社相場：AI活用をうたう受託会社・フリーランスの価格帯",
       "- 当社価格：営業が提示する標準価格（ここから値引きは最大10%まで）",
       "- 相場比：当社価格 ÷ 一般相場の中央値。**40〜70%が勝てるゾーン**",
-      f"- 営業報酬：紹介のみ {int(REWARD['intro_rate']*100)}%／成約まで {int(REWARD['close_rate']*100)}%。月額は紹介 {int(REWARD['monthly_intro_rate']*100)}%・成約 {int(REWARD['monthly_close_rate']*100)}% を{REWARD['monthly_months']}ヶ月", ""]
+      "- 営業報酬：アポ営業 8%＋窓口クローザー 12%（1人で両方なら20%）。紹介のみは10%",
+      "- 月額案件：アポ 6%＋クローザー 9%（紹介のみ 8%）を12ヶ月", ""]
 cur = None
 for r in rows:
     if r["cat"] != cur:
